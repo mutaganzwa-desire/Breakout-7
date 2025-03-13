@@ -4,12 +4,12 @@ class Directory:
         self.subdirectories = {}
 
     def add_directory(self, path, name):
-        """Adds a new directory at the specified path, creating missing parents."""
+        """Add directory at specified path, creating parent directories if needed."""
         node = self._ensure_path(path)
         node.subdirectories[name] = Directory(name)
 
     def delete_directory(self, path):
-        """Deletes the specified directory and its subdirectories."""
+        """Remove directory and all its subdirectories."""
         parent_path, dir_name = path.rsplit('/', 1) if '/' in path else ('', path)
         parent_node = self._traverse(parent_path) if parent_path else self
         
@@ -19,7 +19,7 @@ class Directory:
             print(f"Directory '{path}' not found.")
 
     def _traverse(self, path):
-        """Traverses the tree to find the node at the given path."""
+        """Find node at given path or return None if path doesn't exist."""
         node = self
         for part in path.split('/'):
             if part in node.subdirectories:
@@ -29,7 +29,7 @@ class Directory:
         return node
     
     def _ensure_path(self, path):
-        """Ensures all directories in the given path exist."""
+        """Create directories along path if they don't exist and return final node."""
         node = self
         for part in path.split('/'):
             if part not in node.subdirectories:
@@ -38,7 +38,7 @@ class Directory:
         return node
 
     def display(self, level=0):
-        """Displays the directory structure."""
+        """Print directory structure with indentation based on hierarchy level."""
         print("    " * level + self.name)
         for sub in self.subdirectories.values():
             sub.display(level + 1)
